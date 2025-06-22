@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Athlete Management - Competitions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .competition-list {
+            margin-top: 30px;
+        }
+
+        .competition-item {
+            background-color: #f4f4f4;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .competition-item h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .competition-item p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Competitions</h1>
+</header>
+
+<div class="container">
+    <!-- Form to add competition -->
+    <form id="competitionForm">
+        <label for="competitionName">Competition Name:</label>
+        <input type="text" id="competitionName" name="competitionName" required>
+
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required>
+
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- List of competitions -->
+    <div class="competition-list" id="competitionList">
+        <h2>Upcoming Competitions</h2>
+    </div>
+</div>
+
+<script>
+    // Function to fetch and display the competitions
+    function fetchCompetitions() {
+        fetch('/competitions')  // Ensure this matches the backend API route
+            .then(response => response.json())
+            .then(data => {
+                const competitionList = document.getElementById('competitionList');
+                competitionList.innerHTML = '<h2>Upcoming Competitions</h2>'; // Clear previous content
+
+                if (data.competitions && data.competitions.length > 0) {
+                    data.competitions.forEach(competition => {
+                        const competitionItem = document.createElement('div');
+                        competitionItem.classList.add('competition-item');
+                        
+                        competitionItem.innerHTML = `
+                            <h3>${competition.name}</h3>
+                            <p><strong>Date:</strong> ${competition.date}</p>
+                            <p><strong>Location:</strong> ${competition.location}</p>
+                        `;
+
+                        competitionList.appendChild(competitionItem);
+                    });
+                } else {
+                    competitionList.innerHTML += '<p>No competitions found.</p>';
+                }
+            })
+            .catch(error => console.error('Error fetching competitions:', error));
+    }
+
+    // Load competitions when the page loads
+    window.onload = () => {
+        fetchCompetitions();
+    };
+
+    // Handle form submission to add a new competition
+    document.getElementById('competitionForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const competitionName = document.getElementById('competitionName').value;
+        const date = document.getElementById('date').value;
+        const location = document.getElementById('location').value;
+
+        fetch('/competitions', {  // POST request to add a competition
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ competitionName, date, location })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Competition added successfully!');
+                fetchCompetitions(); // Refresh competition list in real-time
+                document.getElementById('competitionForm').reset(); // Clear form fields
+            } else {
+                alert('Error adding competition.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    // Auto-refresh the competition list every 10 seconds
+    setInterval(fetchCompetitions, 10000);  // Updates every 10 seconds
+</script>
+
+</body>
+</html>

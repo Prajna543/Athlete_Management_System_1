@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Injury</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #2e8b57;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            letter-spacing: 1px;
+        }
+
+        form {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            margin: 40px auto;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            transition: transform 0.3s ease;
+        }
+
+        form:hover {
+            transform: translateY(-2px);
+        }
+
+        label {
+            display: block;
+            margin-top: 20px;
+            font-weight: 600;
+            color: #555;
+            font-size: 1rem;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 14px 16px;
+            margin-top: 8px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #2e8b57;
+            box-shadow: 0 0 8px rgba(46, 139, 87, 0.3);
+            outline: none;
+        }
+
+        button {
+            background-color: #2e8b57;
+            color: white;
+            padding: 14px 20px;
+            margin-top: 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #276f4b;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 600px) {
+            form {
+                padding: 20px;
+                margin: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Report Injury</h1>
+</header>
+
+<form id="injuryForm">
+    <label for="injuryType">Injury Type:</label>
+    <input type="text" id="injuryType" name="injuryType" required>
+
+    <label for="injuryDate">Injury Date:</label>
+    <input type="date" id="injuryDate" name="injuryDate" required>
+
+    <label for="injurySeverity">Severity:</label>
+    <select id="injurySeverity" name="injurySeverity" required>
+        <option value="">-- Select Severity --</option>
+        <option value="minor">Minor</option>
+        <option value="moderate">Moderate</option>
+        <option value="severe">Severe</option>
+    </select>
+
+    <label for="recoveryStatus">Recovery Status:</label>
+    <select id="recoveryStatus" name="recoveryStatus" required>
+        <option value="">-- Select Status --</option>
+        <option value="ongoing">Ongoing</option>
+        <option value="recovered">Recovered</option>
+        <option value="notStarted">Not Started</option>
+    </select>
+
+    <label for="medicalIntervention">Medical Intervention:</label>
+    <input type="text" id="medicalIntervention" name="medicalIntervention" placeholder="e.g. Physiotherapy, Surgery" required>
+
+    <label for="injuryDescription">Injury Description:</label>
+    <textarea id="injuryDescription" name="injuryDescription" rows="4" placeholder="Describe the injury in detail..." required></textarea>
+
+    <button type="submit">Submit Injury</button>
+</form>
+
+<script>
+    document.getElementById('injuryForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const injuryType = document.getElementById('injuryType').value;
+        const injuryDate = document.getElementById('injuryDate').value;
+        const injurySeverity = document.getElementById('injurySeverity').value;
+        const recoveryStatus = document.getElementById('recoveryStatus').value;
+        const medicalIntervention = document.getElementById('medicalIntervention').value;
+        const injuryDescription = document.getElementById('injuryDescription').value;
+
+        fetch('/report-injury', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                injuryType, injuryDate, injurySeverity, recoveryStatus, medicalIntervention, injuryDescription
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Injury reported successfully!');
+                document.getElementById('injuryForm').reset();
+            } else {
+                alert('Error reporting injury.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Athlete Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Optional inline CSS for quick testing -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 80px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px 0;
+            margin: 10px 0;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button:last-child {
+            background-color: #f44336;
+        }
+
+        button:last-child:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Athlete Dashboard</h2>
+
+        <!-- Profile Button -->
+        <button onclick="location.href='profile.html'">View & Update Profile</button>
+
+        <!-- Competitions Button -->
+        <button onclick="location.href='competitions.html'">Register for Competitions</button>
+
+        <!-- Injury Management Button -->
+        <button onclick="location.href='injury.html'">Injury Management</button>
+
+        <!-- Financial Planning Button -->
+        <button onclick="location.href='finance.html'">Financial Planning</button>
+
+        <!-- Logout Button -->
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        function logout() {
+            fetch('/logout')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Logout failed');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert(data.message || 'Logged out successfully');
+                    window.location.href = '/'; // Redirect to home or login page
+                })
+                .catch(error => {
+                    console.error('Logout Error:', error);
+                    alert('Error during logout');
+                });
+        }
+    </script>
+</body>
+</html>
